@@ -34,19 +34,22 @@ const Chatbox: React.FC = () => {
   };
 
   return (
-    <div>
-      <ul>
-        {messages.map((message) => (
-          <li key={index++}>{message}</li>
-        ))}
-      </ul>
-      <input
-        type="text"
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-      />
-      <p />
-      <button onClick={handleSendMessage}>Send</button>
+    <div className="chatbox">
+      <div className="chat-messages">
+        <ul>
+          {messages.map((message) => (
+            <li key={index++}>{message}</li>
+          ))}
+        </ul>
+      </div>
+      <div className="chat-input">
+        <input
+          type="text"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+        />
+        <button onClick={handleSendMessage}>Send</button>
+      </div>
     </div>
   );
 };
