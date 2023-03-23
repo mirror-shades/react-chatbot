@@ -3,17 +3,28 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #e8f8f9;
 }
 
 .chatbox {
   width: 324px;
-  height: 400px;
+  height: 350px;
   border: 1px solid #ccc;
   display: flex;
   flex-direction: column;
   border-radius: 10px;
   background-color: #f9fcfe;
+}
+
+h1 {
+  text-align: center;
+  margin: 0;
+  padding: 10px;
+}
+
+h2 {
+  text-align: center;
+  margin: 0;
+  padding: 10px;
 }
 
 .chat-messages {
@@ -38,7 +49,21 @@ body {
   padding: 10px;
 }
 
-.chat-input button {
+.img-input button {
+  width: auto;
+}
+.img-input {
+  display: flex;
+  align-items: center;
+  margin-top: 110px;
+}
+
+.img-input input[type="text"] {
+  width: calc(100% - 20px);
+  padding: 10px;
+}
+
+.img-input button {
   width: auto;
 }
 

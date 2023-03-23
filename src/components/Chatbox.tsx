@@ -10,10 +10,13 @@ var index = 0;
 const Chatbox: React.FC = () => {
   const [messages, setMessages] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
+  const [imagePrompt, setImagePrompt] = useState<string>("");
+  const [imageLink, setImageLink] = useState<string>(
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/HD_transparent_picture.png/320px-HD_transparent_picture.png"
+  );
 
   const handleSendMessage = async () => {
     if (inputValue === "") return;
-
     setMessages([...messages, inputValue]);
     setInputValue("");
     const response = await openai.createCompletion({
@@ -26,29 +29,59 @@ const Chatbox: React.FC = () => {
       presence_penalty: 0.6,
       stop: [" Human:", " AI:"],
     });
-    console.log(response.data.choices[0].text);
     setMessages((messages) => [
       ...messages,
       response.data.choices[0].text ?? "Something went wrong",
     ]);
   };
 
+  const createImage = async () => {
+    if (imagePrompt === "") return;
+    setImagePrompt("");
+    const response = await openai.createImage({
+      prompt: imagePrompt,
+      n: 1,
+      size: "512x512",
+    });
+    const image_url = response.data.data[0].url;
+    console.log(image_url);
+    setImageLink(image_url ?? imageLink);
+  };
+
   return (
-    <div className="chatbox">
-      <div className="chat-messages">
-        <ul>
-          {messages.map((message) => (
-            <li key={index++}>{message}</li>
-          ))}
-        </ul>
+    <div>
+      <h1>AI tools</h1>
+      <div className="chatbox">
+        <div className="chat-messages">
+          <ul>
+            {messages.map((message) => (
+              <li key={index++}>{message}</li>
+            ))}
+          </ul>
+        </div>
+        <div className="chat-input">
+          <input
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+          />
+          <button onClick={handleSendMessage}>Send</button>
+        </div>
       </div>
-      <div className="chat-input">
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-        />
-        <button onClick={handleSendMessage}>Send</button>
+      <h2>AI Chat</h2>
+      <div className="chatbox">
+        <div>
+          <img src={imageLink} />
+        </div>
+        <div className="img-input">
+          <input
+            type="text"
+            value={imagePrompt}
+            onChange={(e) => setImagePrompt(e.target.value)}
+          />
+          <button onClick={createImage}>Send</button>
+        </div>
+        <h2>AI Image Generation</h2>
       </div>
     </div>
   );
