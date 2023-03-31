@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../App.css";
 import { Configuration, OpenAIApi } from "openai";
+import blank from "../assets/blank.png";
 
 const configuration = new Configuration({
   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
@@ -12,9 +13,7 @@ const Chatbox: React.FC = () => {
   const [inputValue, setInputValue] = useState<string>("");
   const [model, setModel] = useState<string>("gpt-3.5-turbo");
   const [imagePrompt, setImagePrompt] = useState<string>("");
-  const [imageLink, setImageLink] = useState<string>(
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/HD_transparent_picture.png/320px-HD_transparent_picture.png"
-  );
+  const [imageLink, setImageLink] = useState<string>(blank);
 
   let maxToken = 4000;
   const handleSendMessage = async () => {
@@ -85,9 +84,11 @@ const Chatbox: React.FC = () => {
           <button onClick={handleSendMessage}>Send</button>
         </div>
       </div>
+      <br />
+      <h2>AI Image Generation</h2>
       <div className="chatbox">
         <div>
-          <img src={imageLink} />
+          <img src={imageLink} style={{ display: "block", margin: "auto" }} />
         </div>
         <div className="img-input">
           <input
@@ -97,7 +98,6 @@ const Chatbox: React.FC = () => {
           />
           <button onClick={createImage}>Send</button>
         </div>
-        <h2>AI Image Generation</h2>
       </div>
     </div>
   );

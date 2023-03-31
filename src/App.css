@@ -2,12 +2,11 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
 }
 
 .chatbox {
-  width: 324px;
-  height: 350px;
+  width: 565px;
+  height: 565px;
   border: 1px solid #ccc;
   display: flex;
   flex-direction: column;
@@ -55,7 +54,6 @@ h2 {
 .img-input {
   display: flex;
   align-items: center;
-  margin-top: 110px;
 }
 
 .img-input input[type="text"] {
