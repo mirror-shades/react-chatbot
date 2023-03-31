@@ -10,29 +10,28 @@ var index = 0;
 const Chatbox: React.FC = () => {
   const [messages, setMessages] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
+  const [model, setModel] = useState<string>("gpt-3.5-turbo");
   const [imagePrompt, setImagePrompt] = useState<string>("");
   const [imageLink, setImageLink] = useState<string>(
     "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/HD_transparent_picture.png/320px-HD_transparent_picture.png"
   );
 
+  let maxToken = 4000;
   const handleSendMessage = async () => {
     if (inputValue === "") return;
     setMessages([...messages, inputValue]);
     setInputValue("");
-    const response = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: inputValue,
-      temperature: 0.9,
-      max_tokens: 150,
-      top_p: 1,
-      frequency_penalty: 0.0,
-      presence_penalty: 0.6,
+    const response = await openai.createChatCompletion({
+      model: model,
+      messages: [{ role: "user", content: inputValue }],
+      max_tokens: maxToken,
       stop: [" Human:", " AI:"],
     });
     setMessages((messages) => [
       ...messages,
-      response.data.choices[0].text ?? "Something went wrong",
+      response.data.choices[0].message?.content ?? "Something went wrong",
     ]);
+    console.log(response.data);
   };
 
   const createImage = async () => {
@@ -48,10 +47,28 @@ const Chatbox: React.FC = () => {
     setImageLink(image_url ?? imageLink);
   };
 
+  const handleChange = (event: any) => {
+    setModel(event.target.value);
+    if (event.target.value == "gpt-4") {
+      maxToken = 8000;
+    } else {
+      maxToken = 4000;
+    }
+  };
+
   return (
     <div>
       <h1>AI tools</h1>
+      <h2>AI Chat</h2>
+      <label>
+        Model{" "}
+        <select value={model} onChange={handleChange}>
+          <option value="gpt-3.5-turbo">GPT-3.5</option>
+          <option value="gpt-4">GPT-4</option>
+        </select>
+      </label>
       <div className="chatbox">
+        {" "}
         <div className="chat-messages">
           <ul>
             {messages.map((message) => (
@@ -68,7 +85,6 @@ const Chatbox: React.FC = () => {
           <button onClick={handleSendMessage}>Send</button>
         </div>
       </div>
-      <h2>AI Chat</h2>
       <div className="chatbox">
         <div>
           <img src={imageLink} />
