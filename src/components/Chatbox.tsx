@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../App.css";
 import { Configuration, OpenAIApi } from "openai";
+import Blinker from "./Blinker";
 import blank from "../assets/blank.png";
 
 const configuration = new Configuration({
@@ -14,18 +15,21 @@ const Chatbox: React.FC = () => {
   const [model, setModel] = useState<string>("gpt-3.5-turbo");
   const [imagePrompt, setImagePrompt] = useState<string>("");
   const [imageLink, setImageLink] = useState<string>(blank);
+  const [typing, setTyping] = useState<boolean>(false);
 
   let maxToken = 4000;
   const handleSendMessage = async () => {
     if (inputValue === "") return;
     setMessages([...messages, inputValue]);
     setInputValue("");
+    setTyping(true);
     const response = await openai.createChatCompletion({
       model: model,
       messages: [{ role: "user", content: inputValue }],
       max_tokens: maxToken,
       stop: [" Human:", " AI:"],
     });
+    setTyping(false);
     setMessages((messages) => [
       ...messages,
       response.data.choices[0].message?.content ?? "Something went wrong",
@@ -81,7 +85,9 @@ const Chatbox: React.FC = () => {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
           />
-          <button onClick={handleSendMessage}>Send</button>
+          <button onClick={handleSendMessage} disabled={typing}>
+            Send
+          </button>
         </div>
       </div>
       <br />
