@@ -23,9 +23,12 @@ const Chatbox: React.FC = () => {
     setMessages([...messages, inputValue]);
     setInputValue("");
     setTyping(true);
+    //
+    let longText = messages.join("; ") + inputValue;
+    //
     const response = await openai.createChatCompletion({
       model: model,
-      messages: [{ role: "user", content: inputValue }],
+      messages: [{ role: "user", content: longText }], //was input value
       max_tokens: maxToken,
       stop: [" Human:", " AI:"],
     });
@@ -35,6 +38,42 @@ const Chatbox: React.FC = () => {
       response.data.choices[0].message?.content ?? "Something went wrong",
     ]);
     console.log(response.data);
+    console.log(longText);
+  };
+
+  const selfChat = async (seed: string) => {
+    setTyping(true);
+    const response = await openai.createChatCompletion({
+      model: model,
+      messages: [{ role: "user", content: seed }],
+      max_tokens: maxToken,
+      stop: [" Human:", " AI:"],
+    });
+    setTyping(false);
+    loopChat(
+      response.data.choices[0].message?.content ?? "Something went wrong"
+    );
+  };
+
+  const loopChat = async (seed: string) => {
+    setTyping(true);
+    //
+    let longText = messages.join("; ") + seed;
+    //
+    const response = await openai.createChatCompletion({
+      model: model,
+      messages: [{ role: "user", content: longText }],
+      max_tokens: maxToken,
+      stop: [" Human:", " AI:"],
+    });
+    setTyping(false);
+    setMessages((messages) => [
+      ...messages,
+      response.data.choices[0].message?.content ?? "Something went wrong",
+    ]);
+    console.log(response.data);
+    console.log(longText);
+    selfChat(longText);
   };
 
   const createImage = async () => {
@@ -70,6 +109,15 @@ const Chatbox: React.FC = () => {
           <option value="gpt-4">GPT-4</option>
         </select>
       </label>
+      <button
+        onClick={() => {
+          selfChat(
+            "Pretend you are a human being talking to a chatbot for the first time"
+          );
+        }}
+      >
+        talk to self
+      </button>
       <div className="chatbox">
         {" "}
         <div className="chat-messages">
