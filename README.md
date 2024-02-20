@@ -1,5 +1,5 @@
 # chatbot
-## use https://github.com/mirror-shades/chatbot for a better chatbot
+## outdated, use https://github.com/mirror-shades/chatbot for a better chatbot
 
 chatbot built with react
 
