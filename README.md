@@ -1,4 +1,6 @@
 # chatbot
+## use https://github.com/mirror-shades/chatbot for a better chatbot
+
 chatbot built with react
 
 You must put your OpenAI API key into the .env file
